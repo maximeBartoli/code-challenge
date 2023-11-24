@@ -1,7 +1,5 @@
 package com.example.code_challenge.adapter
 
-
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,9 +11,9 @@ import com.bumptech.glide.Glide
 import com.example.code_challenge.model.Article
 
 class ItemAdapter(
-    private val context: Context,
-    private val dataset: List<Article>?
-) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    private var dataset: List<Article>? = arrayListOf()
+
+    ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
     class ItemViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
         val title = view.findViewById<TextView>(R.id.tvTitle)
@@ -26,7 +24,6 @@ class ItemAdapter(
             title.text = article.title
             description.text = article.description
             Glide.with(view.context).load(article.image).centerCrop().into(imageView)
-    //download de l'image
         }
     }
 
@@ -42,10 +39,14 @@ class ItemAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         if (dataset != null){
-            holder.bind(dataset[position])
+            //todo : check methode de verification
+            holder.bind(dataset!!.get(position))
         }
+    }
 
-
-
+    fun setNotify(list: List<Article>){
+        this.dataset = list
+        //todo : check methode de notify, methode plus efficace pour check juste un seul élément
+        notifyDataSetChanged()
     }
 }
