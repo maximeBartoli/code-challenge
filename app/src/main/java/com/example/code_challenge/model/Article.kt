@@ -9,5 +9,8 @@ data class Article(
     @Json(name = "summary")
     val description: String,
     @Json(name = "largeThumbnail")
-    val image: String
+    val image: String,
+    @Json(name = "content")
+    val content:String
+
 )
