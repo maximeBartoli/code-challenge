@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+
 }
 
 android {
@@ -52,6 +53,7 @@ android {
 }
 
 dependencies {
+
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     val fragment_version = "1.5.5"
     implementation("androidx.fragment:fragment-ktx:$fragment_version")
@@ -90,5 +92,6 @@ dependencies {
     // Retrofit with Scalar Converter
     implementation ("com.squareup.retrofit2:converter-scalars:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+
 
 }

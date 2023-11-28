@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.code_challenge.R
 import com.bumptech.glide.Glide
 import com.example.code_challenge.model.Article
+import com.example.code_challenge.model.onItemClickListener
 
 
 class ItemAdapter(
@@ -16,12 +17,23 @@ class ItemAdapter(
 
     ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
-    class ItemViewHolder(private val view: View): RecyclerView.ViewHolder(view) {
-        val defaultImage = R.drawable.default1
+    private lateinit var mListener : onItemClickListener
+    fun setOnItemClickListener(listener: onItemClickListener){
+        mListener = listener
+    }
 
+    class ItemViewHolder(private val view: View,listener: onItemClickListener): RecyclerView.ViewHolder(view) {
+
+        val defaultImage = R.drawable.default1
         val title = view.findViewById<TextView>(R.id.tvTitle)
         val imageView = view.findViewById<ImageView>(R.id.imageView)
         val description = view.findViewById<TextView>(R.id.tvDescription)
+
+        init {
+            view.setOnClickListener {
+                listener.onItemclick(bindingAdapterPosition)
+            }
+        }
 
         fun bind(article: Article){
             var image = if (article.image != "") article.image else defaultImage
@@ -29,6 +41,7 @@ class ItemAdapter(
             title.text = article.title
             description.text = article.description
             Glide.with(view.context).load(image).centerCrop().into(imageView)
+
         }
     }
 
@@ -36,7 +49,7 @@ class ItemAdapter(
         val adapterLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item, parent, false)
 
-        return ItemViewHolder(adapterLayout)
+        return ItemViewHolder(adapterLayout,mListener)
     }
 
     override fun getItemCount() = dataset?.size ?: 0
@@ -47,6 +60,7 @@ class ItemAdapter(
         dataset?.get(position)?.let {
             holder.bind(it)
         }
+
     }
 
     fun setNotify(list: List<Article>){
@@ -54,4 +68,5 @@ class ItemAdapter(
         //todo : check methode de notify, methode plus efficace pour check juste un seul élément
         notifyDataSetChanged()
     }
+
 }

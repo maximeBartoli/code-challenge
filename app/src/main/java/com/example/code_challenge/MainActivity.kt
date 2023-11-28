@@ -22,11 +22,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // Call the List Fragment & link to the view
-        if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.home, ListFragment.newInstance())
-                .commit()
-        }
+//        // Call the List Fragment & link to the view
+//        if (savedInstanceState == null) {
+//            supportFragmentManager.beginTransaction()
+//                .replace(R.id.fragment_container_view, ListFragment.newInstance())
+//                .commit()
+//        }
     }
 }

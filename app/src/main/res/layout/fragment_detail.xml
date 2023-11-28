@@ -3,12 +3,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.code_challenge.MainActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.DetailFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:textColor="@color/grey"
+        android:elevation="4dp"/>
+
+    <TextView
+        android:layout_below="@id/my_toolbar"
+        android:id="@+id/detailTitle"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"/>
 
     <WebView
         android:id="@+id/web"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/detailTitle"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp" />
 
