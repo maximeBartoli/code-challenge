@@ -1,5 +1,6 @@
 package com.example.code_challenge.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ class ItemAdapter(
 
     ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
 
+    private var mPosition : Int = 0
     private lateinit var mListener : onItemClickListener
     fun setOnItemClickListener(listener: onItemClickListener){
         mListener = listener
@@ -55,18 +57,18 @@ class ItemAdapter(
     override fun getItemCount() = dataset?.size ?: 0
 
 
+    @SuppressLint("RecyclerView")
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         // Safe Call
         dataset?.get(position)?.let {
             holder.bind(it)
         }
-
+        mPosition = position
     }
 
     fun setNotify(list: List<Article>){
         this.dataset = list
-        //todo : check methode de notify, methode plus efficace pour check juste un seul élément
-        notifyDataSetChanged()
+        notifyItemChanged(mPosition)
     }
 
 }
