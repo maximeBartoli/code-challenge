@@ -1,6 +1,7 @@
 package com.example.code_challenge.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,10 +21,6 @@ import com.example.code_challenge.viewModel.ListViewModel
 
 class ListFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = ListFragment()
-    }
-
     private lateinit var mViewModel: ListViewModel
     private lateinit var mRecyclerView: RecyclerView
     private lateinit var mManager: RecyclerView.LayoutManager
@@ -42,34 +39,26 @@ class ListFragment : Fragment() {
 
         mManager = LinearLayoutManager(context)
         mViewModel = ViewModelProvider(this)[ListViewModel::class.java]
+        navController = view.findNavController()
 
-        mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_view).apply{
-            mItemAdapter = ItemAdapter()
+
+        mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_view).apply {
+            mItemAdapter = ItemAdapter(object : onItemClickListener {
+                override fun onItemclick(position: Int) {
+                    var id = mItemAdapter.snapshot().items[position].id
+                    val bundle = bundleOf("idArticle" to id)
+                    navController?.navigate(R.id.action_listFragment_to_detailFragment, bundle)
+                }
+            })
+
             layoutManager = mManager
             adapter = mItemAdapter
-
-
         }
 
-        mViewModel.fetchDataFromApi()
-        mViewModel.itemList.observe(viewLifecycleOwner, Observer { itemList ->
-            val list = itemList.items
-            mItemAdapter.setNotify(list)
-        })
+//        mViewModel.fetchData()
 
-
-        mItemAdapter.setOnItemClickListener(object : onItemClickListener{
-            override fun onItemclick(article: Int) {
-//                Toast.makeText(requireContext(), "You click $article", Toast.LENGTH_SHORT).show()
-                navController = view.findNavController()
-                val bundle = bundleOf("article" to article)
-
-                navController.let {
-                    it?.navigate(R.id.action_listFragment_to_detailFragment,bundle)
-                }
-
-            }
+        mViewModel.paginatedArticleList.observe(viewLifecycleOwner, Observer { pagingData ->
+            mItemAdapter.submitData(lifecycle, pagingData)
         })
     }
-
 }

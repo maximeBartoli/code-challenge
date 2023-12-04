@@ -1,33 +1,48 @@
 package com.example.code_challenge.viewModel
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.RecyclerView
-import com.example.code_challenge.model.Item
+import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import com.example.code_challenge.data.ArticlePagingSource
+import com.example.code_challenge.model.Article
 import com.example.code_challenge.network.Api
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
-class ListViewModel : ViewModel() {
-    private val _itemList: MutableLiveData<Item> = MutableLiveData()
-    val itemList: LiveData<Item> get() = _itemList
+class ListViewModel() : ViewModel() {
 
-    fun fetchDataFromApi() {
-        Api.retrofitService.getAllData().enqueue(object : Callback<Item> {
-            override fun onResponse(call: Call<Item>, response: Response<Item>) {
-                if (response.isSuccessful) {
-                    _itemList.value = response.body()
-                }
-            }
+    private val _paginatedArticleList = MutableLiveData<PagingData<Article>>()
+    val paginatedArticleList: LiveData<PagingData<Article>> get() = _paginatedArticleList
 
-            override fun onFailure(call: Call<Item>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+    init {
+        fetchData()
     }
 
+    fun fetchData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                Pager(
+                    config = PagingConfig(pageSize = PAGE_SIZE, enablePlaceholders = false),
+                    pagingSourceFactory = { ArticlePagingSource(Api) }
+                ).flow.cachedIn(viewModelScope).collectLatest {
+                    _paginatedArticleList.postValue(it)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    companion object {
+        private const val PAGE_SIZE = 5
+    }
 }
 
 

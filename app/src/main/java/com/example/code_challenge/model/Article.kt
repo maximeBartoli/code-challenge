@@ -3,6 +3,7 @@ package com.example.code_challenge.model
 import com.squareup.moshi.Json
 
 data class Article(
+    @Json(name = "id")
     val id: Int,
     @Json(name = "title")
     val title: String,
@@ -12,5 +13,4 @@ data class Article(
     val image: String,
     @Json(name = "content")
     val content:String
-
 )

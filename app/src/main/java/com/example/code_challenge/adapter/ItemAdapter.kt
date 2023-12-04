@@ -1,11 +1,12 @@
 package com.example.code_challenge.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.code_challenge.R
 import com.bumptech.glide.Glide
@@ -13,62 +14,52 @@ import com.example.code_challenge.model.Article
 import com.example.code_challenge.model.onItemClickListener
 
 
-class ItemAdapter(
-    private var dataset: List<Article>? = arrayListOf()
+class ItemAdapter(private val listener: onItemClickListener?) :
+    PagingDataAdapter<Article, ItemAdapter.ItemViewHolder>(ArticleDiffCallback()) {
 
-    ) : RecyclerView.Adapter<ItemAdapter.ItemViewHolder>() {
+    class ItemViewHolder(private val view: View, private val listener: onItemClickListener?) :
+        RecyclerView.ViewHolder(view) {
 
-    private var mPosition : Int = 0
-    private lateinit var mListener : onItemClickListener
-    fun setOnItemClickListener(listener: onItemClickListener){
-        mListener = listener
-    }
-
-    class ItemViewHolder(private val view: View,listener: onItemClickListener): RecyclerView.ViewHolder(view) {
-
-        val defaultImage = R.drawable.default1
-        val title = view.findViewById<TextView>(R.id.tvTitle)
-        val imageView = view.findViewById<ImageView>(R.id.imageView)
-        val description = view.findViewById<TextView>(R.id.tvDescription)
+        private val defaultImage = R.drawable.default1
+        private val title: TextView = view.findViewById(R.id.tvTitle)
+        private val imageView: ImageView = view.findViewById(R.id.imageView)
+        private val description: TextView = view.findViewById(R.id.tvDescription)
 
         init {
             view.setOnClickListener {
-                listener.onItemclick(bindingAdapterPosition)
+                listener?.onItemclick(bindingAdapterPosition)
             }
         }
 
-        fun bind(article: Article){
-            var image = if (article.image != "") article.image else defaultImage
-
+        fun bind(article: Article) {
+            val image = if (article.image != "") article.image else defaultImage
             title.text = article.title
             description.text = article.description
             Glide.with(view.context).load(image).centerCrop().into(imageView)
-
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val adapterLayout = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_item, parent, false)
-
-        return ItemViewHolder(adapterLayout,mListener)
+        if (listener !== null){
+            return ItemViewHolder(adapterLayout, listener)
+        }
+        return ItemViewHolder(adapterLayout,null)
     }
 
-    override fun getItemCount() = dataset?.size ?: 0
-
-
-    @SuppressLint("RecyclerView")
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        // Safe Call
-        dataset?.get(position)?.let {
+        getItem(position)?.let {
             holder.bind(it)
         }
-        mPosition = position
     }
 
-    fun setNotify(list: List<Article>){
-        this.dataset = list
-        notifyItemChanged(mPosition)
+    class ArticleDiffCallback : DiffUtil.ItemCallback<Article>() {
+        override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
+            return oldItem.id == newItem.id
+        }
+        override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
+            return oldItem == newItem
+        }
     }
-
 }
