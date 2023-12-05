@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.example.code_challenge.model.Article
 import com.example.code_challenge.model.Item
 import com.example.code_challenge.network.Api
+import com.example.code_challenge.viewModel.ListViewModel
 import retrofit2.await
 import retrofit2.awaitResponse
 import kotlin.math.max
@@ -22,17 +23,18 @@ class ArticlePagingSource(apiService: Api) : PagingSource<Int, Article> (){
         }
     }
 
+    //Extraction de donnée pour chaque défilement de facon async
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         try {
-            var page = params.key ?: 1
+            val page = params.key ?: 1
 
             val response = response.getAllData(page,5).awaitResponse()
 
             if (response.isSuccessful) {
                 val articles: List<Article> = response.body()?.items ?: emptyList()
 
-                var prevKey = if (page == 1) null else page - 1
-                var nextKey = if (articles.isEmpty()) null else page + 1
+                val prevKey = if (page == 1) null else page - 1
+                val nextKey = if (articles.isEmpty()) null else page + 1
 
                 return LoadResult.Page(
                     data = articles,

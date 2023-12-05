@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class ListViewModel() : ViewModel() {
+class ListViewModel : ViewModel() {
 
     private val _paginatedArticleList = MutableLiveData<PagingData<Article>>()
     val paginatedArticleList: LiveData<PagingData<Article>> get() = _paginatedArticleList
@@ -25,7 +25,7 @@ class ListViewModel() : ViewModel() {
         fetchData()
     }
 
-    fun fetchData() {
+    private fun fetchData() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Pager(
@@ -34,12 +34,12 @@ class ListViewModel() : ViewModel() {
                 ).flow.cachedIn(viewModelScope).collectLatest {
                     _paginatedArticleList.postValue(it)
                 }
-            } catch (e: Exception) {
+            }
+            catch (e: Exception) {
                 e.printStackTrace()
             }
         }
     }
-
     companion object {
         private const val PAGE_SIZE = 5
     }
