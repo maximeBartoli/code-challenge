@@ -19,7 +19,10 @@ private val retrofit = Retrofit.Builder().addConverterFactory(MoshiConverterFact
 interface ApiService{
 
     @GET("/front/get_items/826899/14560013/")
-    fun getAllData(@Query("page") page: Int, @Query("per_page") perPage: Int): Call<Item>
+    fun getAllData(
+        @Query("page") page: Int,
+        @Query("per_page") perPage: Int
+    ): Call<Item>
 
 }
 

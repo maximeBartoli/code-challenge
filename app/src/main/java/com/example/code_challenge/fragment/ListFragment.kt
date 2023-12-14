@@ -15,6 +15,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.code_challenge.R
 import com.example.code_challenge.adapter.ItemAdapter
+import com.example.code_challenge.data.AppDatabase
+import com.example.code_challenge.data.ArticleEntity
 import com.example.code_challenge.model.onItemClickListener
 import com.example.code_challenge.viewModel.ListViewModel
 
@@ -41,7 +43,6 @@ class ListFragment : Fragment() {
         mViewModel = ViewModelProvider(this)[ListViewModel::class.java]
         navController = view.findNavController()
 
-
         mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_view).apply {
             mItemAdapter = ItemAdapter(object : onItemClickListener {
                 override fun onItemclick(position: Int) {
@@ -53,9 +54,9 @@ class ListFragment : Fragment() {
 
             layoutManager = mManager
             adapter = mItemAdapter
+
         }
 
-//        mViewModel.fetchData()
 
         mViewModel.paginatedArticleList.observe(viewLifecycleOwner, Observer { pagingData ->
             mItemAdapter.submitData(lifecycle, pagingData)

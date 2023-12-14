@@ -19,6 +19,8 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.example.code_challenge.R
 import com.example.code_challenge.adapter.ItemAdapter
+import com.example.code_challenge.data.AppDatabase
+import com.example.code_challenge.data.ArticleEntity
 import com.example.code_challenge.model.Article
 import com.example.code_challenge.model.onItemClickListener
 import com.example.code_challenge.viewModel.ListViewModel
@@ -58,10 +60,19 @@ class DetailFragment : Fragment() {
             findNavController().navigateUp()
         }
         id = arguments?.getInt("idArticle") ?: 0
-        Log.d("pos","$id")
 
-
-
+        val article = AppDatabase.getDatabase().articleDao().getArticleById(id).observe(viewLifecycleOwner) { article: ArticleEntity? ->
+            article?.let {
+                title.text= article.title
+                val htmlImgStyle =
+                            "<style>img{display: inline;height: auto;max-width: 100%;}iframe{display: inline;height: auto;max-width: 100%;}</style>"
+                        mWebView.loadData(
+                            htmlImgStyle + article.content,
+                            "text/html; charset=utf-8",
+                            "UTF-8"
+                        )
+            }
+        }
 
 
 //        mItemAdapter = ItemAdapter(null)

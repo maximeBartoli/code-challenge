@@ -1,5 +1,6 @@
 package com.example.code_challenge.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,12 +11,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.code_challenge.R
 import com.bumptech.glide.Glide
+import com.example.code_challenge.data.ArticleEntity
 import com.example.code_challenge.model.Article
 import com.example.code_challenge.model.onItemClickListener
 
 
 class ItemAdapter(private val listener: onItemClickListener?) :
-    PagingDataAdapter<Article, ItemAdapter.ItemViewHolder>(ArticleDiffCallback()) {
+    PagingDataAdapter<ArticleEntity, ItemAdapter.ItemViewHolder>(ArticleDiffCallback()) {
 
     class ItemViewHolder(private val view: View, private val listener: onItemClickListener?) :
         RecyclerView.ViewHolder(view) {
@@ -31,7 +33,7 @@ class ItemAdapter(private val listener: onItemClickListener?) :
             }
         }
 
-        fun bind(article: Article) {
+        fun bind(article: ArticleEntity) {
             val image = if (article.image != "") article.image else defaultImage
             title.text = article.title
             description.text = article.description
@@ -54,11 +56,13 @@ class ItemAdapter(private val listener: onItemClickListener?) :
         }
     }
 
-    class ArticleDiffCallback : DiffUtil.ItemCallback<Article>() {
-        override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
+    class ArticleDiffCallback : DiffUtil.ItemCallback<ArticleEntity>() {
+
+        override fun areItemsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity): Boolean {
             return oldItem.id == newItem.id
         }
-        override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
+
+        override fun areContentsTheSame(oldItem: ArticleEntity, newItem: ArticleEntity): Boolean {
             return oldItem == newItem
         }
     }
