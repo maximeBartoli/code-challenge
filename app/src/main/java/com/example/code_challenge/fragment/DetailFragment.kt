@@ -31,8 +31,6 @@ import kotlinx.coroutines.flow.collect
 class DetailFragment : Fragment() {
 
     private lateinit var mViewModel: ListViewModel
-    private lateinit var mItemAdapter: ItemAdapter
-
     private lateinit var mWebView: WebView
     private var id: Int = 0
 
@@ -64,8 +62,7 @@ class DetailFragment : Fragment() {
         val article = AppDatabase.getDatabase().articleDao().getArticleById(id).observe(viewLifecycleOwner) { article: ArticleEntity? ->
             article?.let {
                 title.text= article.title
-                val htmlImgStyle =
-                            "<style>img{display: inline;height: auto;max-width: 100%;}iframe{display: inline;height: auto;max-width: 100%;}</style>"
+                val htmlImgStyle = "<style>img{display: inline;height: auto;max-width: 100%;}iframe{display: inline;height: auto;max-width: 100%;}</style>"
                         mWebView.loadData(
                             htmlImgStyle + article.content,
                             "text/html; charset=utf-8",
@@ -73,34 +70,5 @@ class DetailFragment : Fragment() {
                         )
             }
         }
-
-
-//        mItemAdapter = ItemAdapter(null)
-//        var article = mItemAdapter.snapshot().items[position]
-//        Log.d("pos","$article")
-//        title.text = article.title
-
-//        mViewModel.paginatedArticleList.observe(viewLifecycleOwner) { pagingData ->
-//            lifecycleScope.launch {
-//                title.text = mItemAdapter.snapshot().items.get(position).title
-//                Log.d("inCoroutine", "$pagingData")
-//
-//                pagingData.map { data ->
-//                    Log.d("inMap", "$data")
-//                    val articleList = data as List<Article>
-//                    val article = articleList[position]
-//
-//                        title.text = article.title
-//
-//                        val htmlImgStyle =
-//                            "<style>img{display: inline;height: auto;max-width: 100%;}iframe{display: inline;height: auto;max-width: 100%;}</style>"
-//                        mWebView.loadData(
-//                            htmlImgStyle + article.content,
-//                            "text/html; charset=utf-8",
-//                            "UTF-8"
-//                        )
-//                }
-//            }
-//        }
     }
 }

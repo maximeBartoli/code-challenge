@@ -19,6 +19,7 @@ import com.example.code_challenge.data.AppDatabase
 import com.example.code_challenge.data.ArticleEntity
 import com.example.code_challenge.model.onItemClickListener
 import com.example.code_challenge.viewModel.ListViewModel
+import com.google.android.material.snackbar.Snackbar
 
 
 class ListFragment : Fragment() {
@@ -46,20 +47,23 @@ class ListFragment : Fragment() {
         mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_view).apply {
             mItemAdapter = ItemAdapter(object : onItemClickListener {
                 override fun onItemclick(position: Int) {
-                    var id = mItemAdapter.snapshot().items[position].id
-                    val bundle = bundleOf("idArticle" to id)
-                    navController?.navigate(R.id.action_listFragment_to_detailFragment, bundle)
+                    val id = mItemAdapter.snapshot().getOrNull(position)?.id
+                    if (id != null) {
+                        val bundle = bundleOf("idArticle" to id)
+                        navController?.navigate(R.id.action_listFragment_to_detailFragment, bundle)
+                    } else {
+                        Log.e("art", "Invalid position clicked: $position")
+                    }
                 }
             })
-
             layoutManager = mManager
             adapter = mItemAdapter
-
         }
-
 
         mViewModel.paginatedArticleList.observe(viewLifecycleOwner, Observer { pagingData ->
             mItemAdapter.submitData(lifecycle, pagingData)
         })
     }
+
+
 }

@@ -19,8 +19,8 @@ class ArticleRemoteMediator(
 ) : RemoteMediator<Int,ArticleEntity>(){
 
     companion object {
-        const val PAGE_SIZE = 5
-        var page = 1
+        const val PAGE_SIZE = 10
+        var page = 0
     }
 
     override suspend fun load(
@@ -31,6 +31,7 @@ class ArticleRemoteMediator(
         return try {
             val loadKey = when(loadType){
                 LoadType.REFRESH -> {
+                    page = 1
                     1
                 }
                 LoadType.PREPEND -> return MediatorResult.Success(
@@ -47,6 +48,7 @@ class ArticleRemoteMediator(
                     }
                 }
             }
+
             Log.d("art", "Rm :$loadType, load key: $loadKey")
 
             val response = Api.getAllData(
@@ -56,13 +58,12 @@ class ArticleRemoteMediator(
 
             if (response.isSuccessful) {
 
-                Log.d("art","Rm : response API succes")
-
                 val articles: List<Article> = response.body()?.items ?: emptyList()
                 try {
                     db.withTransaction {
                         if(loadType == LoadType.REFRESH){
                             db.articleDao().deleteAll()
+
                         }
                         val articleEntities = articles.map { it.toArticleEntity() }
                         db.articleDao().upsertAll(articleEntities)
@@ -77,6 +78,7 @@ class ArticleRemoteMediator(
                 )
             }else{
                 MediatorResult.Error(error("Api ne répond pas"))
+
             }
 
 

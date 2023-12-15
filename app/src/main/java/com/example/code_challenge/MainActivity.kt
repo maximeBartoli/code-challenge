@@ -12,18 +12,5 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val db = AppDatabase
-
-        db.getInstance(this)
-
-//        GlobalScope.launch {
-//            val result = db.getDatabase().articleDao().insert(ArticleEntity(
-//                123,
-//                "test",
-//                "ceci est un test",
-//                "ceci est une image",
-//                "Mon contenu"))
-//            Log.d("db","$result")
-//        }
     }
 }
