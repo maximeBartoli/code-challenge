@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -44,9 +45,11 @@ class ListFragment : Fragment() {
         mViewModel = ViewModelProvider(this)[ListViewModel::class.java]
         navController = view.findNavController()
 
+
         mRecyclerView = view.findViewById<RecyclerView>(R.id.recycler_view).apply {
             mItemAdapter = ItemAdapter(object : onItemClickListener {
                 override fun onItemclick(position: Int) {
+
                     val id = mItemAdapter.snapshot().getOrNull(position)?.id
                     if (id != null) {
                         val bundle = bundleOf("idArticle" to id)
@@ -61,9 +64,8 @@ class ListFragment : Fragment() {
         }
 
         mViewModel.paginatedArticleList.observe(viewLifecycleOwner, Observer { pagingData ->
+            Log.d("art","SubmitData : $pagingData")
             mItemAdapter.submitData(lifecycle, pagingData)
         })
     }
-
-
 }

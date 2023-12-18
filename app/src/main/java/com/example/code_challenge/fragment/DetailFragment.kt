@@ -62,12 +62,12 @@ class DetailFragment : Fragment() {
         val article = AppDatabase.getDatabase().articleDao().getArticleById(id).observe(viewLifecycleOwner) { article: ArticleEntity? ->
             article?.let {
                 title.text= article.title
-                val htmlImgStyle = "<style>img{display: inline;height: auto;max-width: 100%;}iframe{display: inline;height: auto;max-width: 100%;}</style>"
-                        mWebView.loadData(
-                            htmlImgStyle + article.content,
-                            "text/html; charset=utf-8",
-                            "UTF-8"
-                        )
+                    val htmlImgStyle = "<style>img{display: inline;height: auto;max-width: 100%;}iframe{display: inline;height: auto;max-width: 100%;}</style>"
+                    mWebView.loadData(
+                        htmlImgStyle + article.content,
+                        "text/html; charset=utf-8",
+                        "UTF-8"
+                    )
             }
         }
     }

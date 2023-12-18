@@ -1,6 +1,8 @@
 package com.example.code_challenge.data
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -14,6 +16,8 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPagingApi::class)
 class ArticleRemoteMediator(
+    private val context: Context,
+
     private val db : AppDatabase,
     private  val Api : ApiService
 ) : RemoteMediator<Int,ArticleEntity>(){
@@ -43,6 +47,7 @@ class ArticleRemoteMediator(
                         return MediatorResult.Success(
                             endOfPaginationReached = true
                         )
+
                     }else{
                         ++page
                     }
@@ -63,7 +68,6 @@ class ArticleRemoteMediator(
                     db.withTransaction {
                         if(loadType == LoadType.REFRESH){
                             db.articleDao().deleteAll()
-
                         }
                         val articleEntities = articles.map { it.toArticleEntity() }
                         db.articleDao().upsertAll(articleEntities)
@@ -77,15 +81,15 @@ class ArticleRemoteMediator(
                     endOfPaginationReached = articles.isEmpty()
                 )
             }else{
+                Toast.makeText(context, "L'API ne répond pas", Toast.LENGTH_SHORT).show()
                 MediatorResult.Error(error("Api ne répond pas"))
-
             }
 
 
         }catch (e:Exception){
             Log.e("art", "Erreur lors du chargement des données", e)
+            Toast.makeText(context, "Hors connexion : impossible de charger plus de données", Toast.LENGTH_LONG).show()
             MediatorResult.Error(e)
         }
     }
-
 }

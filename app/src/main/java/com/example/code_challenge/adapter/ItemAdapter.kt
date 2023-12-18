@@ -19,8 +19,10 @@ import com.example.code_challenge.model.onItemClickListener
 class ItemAdapter(private val listener: onItemClickListener?) :
     PagingDataAdapter<ArticleEntity, ItemAdapter.ItemViewHolder>(ArticleDiffCallback()) {
 
+
     class ItemViewHolder(private val view: View, private val listener: onItemClickListener?) :
         RecyclerView.ViewHolder(view) {
+
 
         private val defaultImage = R.drawable.default1
         private val title: TextView = view.findViewById(R.id.tvTitle)
@@ -49,7 +51,6 @@ class ItemAdapter(private val listener: onItemClickListener?) :
         }
         return ItemViewHolder(adapterLayout,null)
     }
-
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         getItem(position)?.let {
             holder.bind(it)
@@ -66,4 +67,5 @@ class ItemAdapter(private val listener: onItemClickListener?) :
             return oldItem == newItem
         }
     }
+
 }
